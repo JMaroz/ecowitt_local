@@ -45,7 +45,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 STEP_OPTIONS_DATA_SCHEMA = vol.Schema(
     {
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(
-            int, vol.Range(min=30, max=300)
+            int, vol.Range(min=10, max=300)
         ),
         vol.Optional(CONF_MAPPING_INTERVAL, default=DEFAULT_MAPPING_INTERVAL): vol.All(
             int, vol.Range(min=300, max=3600)
