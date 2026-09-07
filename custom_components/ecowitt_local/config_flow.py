@@ -330,7 +330,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             {
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=current_scan_interval
-                ): vol.All(int, vol.Range(min=30, max=300)),
+                ): vol.All(int, vol.Range(min=10, max=300)),
                 vol.Optional(
                     CONF_MAPPING_INTERVAL, default=current_mapping_interval
                 ): vol.All(int, vol.Range(min=300, max=3600)),
