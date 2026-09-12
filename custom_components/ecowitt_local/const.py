@@ -15,7 +15,7 @@ CONF_MAPPING_INTERVAL: Final = "mapping_interval"
 CONF_INCLUDE_INACTIVE: Final = "include_inactive"
 
 # Default values
-DEFAULT_SCAN_INTERVAL: Final = 60  # seconds
+DEFAULT_SCAN_INTERVAL: Final = 10  # seconds
 DEFAULT_MAPPING_INTERVAL: Final = 600  # seconds (10 minutes)
 DEFAULT_INCLUDE_INACTIVE: Final = False
 
