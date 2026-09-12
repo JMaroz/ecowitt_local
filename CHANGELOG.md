@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.28] - 2026-09-09
+
+### Fixed
+- **WH69 battery showed 0% (Ecowitt's own dashboard reported "normal")**: v1.7.26's fallback that gives the losing device in a WN20/WH69/WH40 rain-block tie-break its own battery entity from `get_sensors_info`'s `batt` field always treated that value as a 0-5 bar scale (`batt × 20%`). WH69/WH65 (and, per the spec, WH40/WN20 as well) can instead report raw binary battery (0=normal, 1=low) through this field, so a `batt` of `"0"` was read as 0 bars (0%) instead of "normal" (100%). The fallback now applies the same binary-vs-bar-scale heuristic already used for the direct rain-block battery extraction: a raw `"0"` or `"1"` from `get_sensors_info` is treated as binary for these tipping-bucket devices, instead of being unconditionally multiplied by 20. (issue #239)
+
+## [1.7.27] - 2026-09-08
+
+### Added
+- **"Resync Sensor Mappings" button**: Each gateway device now has a diagnostic button entity (`button.ecowitt_gateway_<id>_resync_mapping`) that immediately re-runs the `get_sensors_info` mapping refresh and a full data refresh, instead of waiting for the periodic mapping-update interval. Useful when changing sensor assignments (adding/removing/moving/renaming a sensor) on the gateway and wanting Home Assistant to pick it up right away. Reuses the existing `async_refresh_mapping()` coordinator method that already backs the `ecowitt_local.refresh_mapping` service. (issue #246)
+- **Manual removal of stale sensor devices**: A sensor device whose hardware ID is no longer reported by `get_sensors_info` (e.g. permanently removed or replaced) can now be deleted from **Settings → Devices & Services → Ecowitt Local** using Home Assistant's standard device-delete option, instead of only being disableable. The gateway device itself, and any hardware ID the gateway is still actively reporting, remain protected from accidental removal — deleting an active sensor would just have it reappear on the next mapping poll. (issue #245)
+- **User-assigned gateway sensor names used as device names**: If a sensor has been given a custom name on the Ecowitt gateway itself (e.g. "Deep Freezer" instead of the default "Temp & Humidity CH2"), that name is now used as the Home Assistant device's suggested name. Detected by the absence of the default "CH{n}" pattern in the gateway's reported sensor name, so newly discovered sensors are immediately identifiable without manually renaming each device. Sensors left with their default gateway name are unaffected. (issue #243)
+
+### Fixed
+- **Deprecated `device_registry.async_get_device()` calls**: Newer Home Assistant core releases warn (and will eventually stop working) when integrations call `async_get_device(identifiers=...)`, since device identifiers are no longer guaranteed unique across config entries. All five call sites (`__init__.py` gateway/ghost-device lookups and migration logic, `device_compat.py`'s via-device resolution) now use a small identifier-scoped lookup helper instead, avoiding the deprecated method entirely. (issue #241)
+
 ## [1.7.26] - 2026-09-07
 
 ### Fixed
